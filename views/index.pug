@@ -1,0 +1,26 @@
+doctype html
+html
+    head
+        title Todo App
+        link(rel='stylesheet', href='/todo.css')
+    body
+        .container
+            h1.text-center Todo App
+            form#todo-form(action='/', method='post', class='form-inline justify-content-center')
+                input(type='text', name='title', placeholder='Enter todo', required)
+                button(type='submit') Add Todo
+            table.table
+                thead
+                    tr
+                        th Item
+                        th Status
+                        th Action
+                tbody
+                    each todo in todos
+                        tr(data-id=todo._id)
+                            td(data-label='Item')= todo.title
+                            td(data-label='Status')=todo.status
+                            td(data-label='Action')
+                                form(action=`/${todo._id}?_method=DELETE`, method='post', class='inline-form')
+                                    button(type='submit', class='delete-btn') Delete
+        script(src='/app.js')
