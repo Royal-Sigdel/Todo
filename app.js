@@ -18,8 +18,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'pug');
 
 // Routes
-app.use('/', require('./routes/EasyTodos'));
+app.use('/', require('./routes/EasyTodosRoutes'));
 
 // Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(3000, function(){
+    console.log( 'Listening on port 3000' )
+});
+
+

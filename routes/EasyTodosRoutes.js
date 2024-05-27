@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Todo = require('../models/EasyTodo');
+const Todo = require('../models/EasyTodoModels'); // Ensure this path is correct
 
 // Get all todos
 router.get('/', async (req, res) => {
@@ -15,19 +15,22 @@ router.get('/', async (req, res) => {
 
 // Add a new todo
 router.post('/', async (req, res) => {
-    const existingTodo = await Todo.findOne({ title: req.body.title });
-    if (existingTodo) {
-        return res.status(400).json({ message: 'Todo item already exists' });
-    }
-
-    const todo = new Todo({
-        title: req.body.title,
-        status: 'pending'
-    });
-
     try {
+        const existingTodo = await Todo.findOne({ title: req.body.title });
+        if (existingTodo) {
+            return res.status(400).json({ message: 'Todo item already exists' });
+        }
+
+        const todo = new Todo({
+            title: req.body.title,
+            status: 'pending'
+        });
+
         const newTodo = await todo.save();
-        res.status(201).json({ message: 'Todo item added successfully' });
+
+        res.status(201).json({
+            message: 'Todo item added successfully'
+        });
     } catch (err) {
         console.error('Error saving todo:', err);
         res.status(400).json({ message: err.message });

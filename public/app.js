@@ -1,27 +1,41 @@
-document.getElementById('todo-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('todo-form');
 
-    const title = document.querySelector('input[name="title"]').value;
+    if (!form) {
+        console.error("Form not found");
+        return;
+    }
 
-    const response = await fetch('/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-            title: title
-        })
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log("Form submitted");
+
+        const title = document.querySelector('input[name="title"]').value;
+        console.log("Title:", title);
+
+        const response = await fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title: title })
+        });
+
+        console.log("Response status:", response.status);
+
+        if(response.ok) {
+            const result = await response.json();
+            console.log("Success response:", result);
+            print(result.message);
+            alert(result.message);
+        } else {
+            const error = await response.json();
+            console.log("Error response:", error);
+            alert(error.message);
+        }
     });
 
-    if (response.ok) {
-        const result = await response.json();
-        alert(result.message);
-        window.location.reload();
-    } else {
-        const error = await response.json();
-        console.log(error.message);
-        alert(error.message);
-    }
+    fetchTodos();
 });
 
 async function fetchTodos() {
@@ -43,7 +57,7 @@ function setupDeleteForms() {
 
                 if (response.ok) {
                     const result = await response.json();
-                    alert(result.message);
+                    //alert(result.message);
                     form.closest('tr').remove();
                 } else {
                     const error = await response.json();
@@ -53,5 +67,3 @@ function setupDeleteForms() {
         });
     });
 }
-
-window.onload = fetchTodos;
