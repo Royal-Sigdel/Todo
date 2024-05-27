@@ -4,11 +4,12 @@ html
     title Todo App
     link(rel='stylesheet', href='/todo.css')
   body
+    script(src='/app.js')
     .container
       h1.text-center Todo App
-      form#todo-form(action='/', method='post', class='form-inline justify-content-center')
+      form#todo-form( class='form-inline justify-content-center')
         input(type='text', name='title', placeholder='Enter todo', required)
-        button(type='submit') Add Todo
+        button(type='button', onclick='addTodo()') Add Todo
       table.table
         thead
           tr
@@ -23,4 +24,3 @@ html
               td(data-label='Action')
                 form(action=`/${todo._id}?_method=DELETE`, method='post', class='inline-form')
                   button(type='submit', class='delete-btn') Delete
-    script(src='/app.js')

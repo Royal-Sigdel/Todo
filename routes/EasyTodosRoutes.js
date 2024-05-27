@@ -16,6 +16,7 @@ router.get('/', async (req, res) => {
 // Add a new todo
 router.post('/', async (req, res) => {
     try {
+        console.log("request ====", req.body)
         const existingTodo = await Todo.findOne({ title: req.body.title });
         if (existingTodo) {
             return res.status(400).json({ message: 'Todo item already exists' });
@@ -28,12 +29,12 @@ router.post('/', async (req, res) => {
 
         const newTodo = await todo.save();
 
-        res.status(201).json({
+        return res.json({
             message: 'Todo item added successfully'
         });
     } catch (err) {
         console.error('Error saving todo:', err);
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 });
 

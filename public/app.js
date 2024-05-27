@@ -6,43 +6,65 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        console.log("Form submitted");
-
-        const title = document.querySelector('input[name="title"]').value;
-        console.log("Title:", title);
-
-        const response = await fetch('/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ title: title })
-        });
-
-        console.log("Response status:", response.status);
-
-        if(response.ok) {
-            const result = await response.json();
-            console.log("Success response:", result);
-            print(result.message);
-            alert(result.message);
-        } else {
-            const error = await response.json();
-            console.log("Error response:", error);
-            alert(error.message);
-        }
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        await addTodo();
     });
 
     fetchTodos();
 });
 
+async function addTodo() {
+    // Get the value from the input field
+    var todoInput = document.querySelector('input[name="title"]').value;
+    if (todoInput.trim() === '') {
+        alert('Please enter a todo item.');
+        return;
+    }
+
+    console.log('Adding todo:', todoInput);
+
+    // Optionally, clear the input after adding
+    document.querySelector('input[name="title"]').value = '';
+
+    try {
+        const response = await fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'title': todoInput })
+        });
+
+        console.log("Response status:", response.status);
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log("Success response:", result);
+            alert(result.message);
+
+            // Reload the page to fetch the updated list of todos
+            location.reload();
+        } else {
+            const error = await response.json();
+            console.log("Error response:", error);
+            alert(error.message);
+        }
+    } catch (error) {
+        console.error("Error occurred while adding todo:", error);
+        alert("An error occurred while adding the todo item.");
+    }
+}
+
 async function fetchTodos() {
-    const response = await fetch('/');
-    const data = await response.text();
-    document.documentElement.innerHTML = data;
-    setupDeleteForms();
+    try {
+        const response = await fetch('/');
+        const data = await response.text();
+        document.documentElement.innerHTML = data;
+        setupDeleteForms();
+    } catch (error) {
+        console.error("Error occurred while fetching todos:", error);
+    }
 }
 
 function setupDeleteForms() {
@@ -51,17 +73,20 @@ function setupDeleteForms() {
             e.preventDefault();
             const id = form.closest('tr').dataset.id;
             if (confirm("Are you sure you want to delete this item?")) {
-                const response = await fetch(`/${id}`, {
-                    method: 'DELETE'
-                });
+                try {
+                    const response = await fetch(`/${id}`, {
+                        method: 'DELETE'
+                    });
 
-                if (response.ok) {
-                    const result = await response.json();
-                    //alert(result.message);
-                    form.closest('tr').remove();
-                } else {
-                    const error = await response.json();
-                    alert('Failed to delete TODO: ' + error.message);
+                    if (response.ok) {
+                        const result = await response.json();
+                        form.closest('tr').remove();
+                    } else {
+                        const error = await response.json();
+                        alert('Failed to delete TODO: ' + error.message);
+                    }
+                } catch (error) {
+                    console.error("Error occurred while deleting todo:", error);
                 }
             }
         });
