@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Todo = require('../models/EasyTodoModels'); // Ensure this path is correct
+const Todo = require('../models/EasyTodoModels');
 
-// Get all todos
+
 router.get('/', async (req, res) => {
     try {
         const todos = await Todo.find();
@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Add a new todo
+
 router.post('/', async (req, res) => {
     try {
         console.log("request ====", req.body)
@@ -38,7 +38,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Delete a todo
+
 router.delete('/:id', async (req, res) => {
     try {
         const todo = await Todo.findByIdAndDelete(req.params.id);

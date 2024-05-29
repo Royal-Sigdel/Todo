@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function addTodo() {
-    // Get the value from the input field
+
     var todoInput = document.querySelector('input[name="title"]').value;
     if (todoInput.trim() === '') {
         alert('Please enter a todo item.');
@@ -24,7 +24,7 @@ async function addTodo() {
 
     console.log('Adding todo:', todoInput);
 
-    // Optionally, clear the input after adding
+
     document.querySelector('input[name="title"]').value = '';
 
     try {
@@ -43,7 +43,6 @@ async function addTodo() {
             console.log("Success response:", result);
             alert(result.message);
 
-            // Reload the page to fetch the updated list of todos
             location.reload();
         } else {
             const error = await response.json();
